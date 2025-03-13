@@ -6,56 +6,36 @@ using namespace std;
 // } Driver Code Ends
 
 class Solution {
-    int helper(vector<int>& arr, int n, int target, int count, vector<vector<int>> &dp){
-        
-        //base case
-        
-        
-        if(target == 0){
-            
-            if(count != 0){
-                return pow(2,count);
-            }
-            
-            else{
-                return 1;
-            }
-        }
-        
-        
-        
-        if(n == 0)
-        return 0;
-        
-        if(dp[n][target] != -1)
-        return dp[n][target];
-        
-        if(arr[n-1] <= target){
-            return dp[n][target] = helper(arr, n-1, target - arr[n-1], count, dp) +
-                                   helper(arr, n-1, target, count, dp);
-        }
-        
-        else{
-            return dp[n][target] = helper(arr, n-1, target, count, dp);
-        }
-    }
-    
+  public:
     public:
-    int perfectSum(vector<int>& arr, int target) {
-        // code here
-        int n = arr.size();
+  
+   int countsubsets(int index, int target, vector<int>& arr,vector<vector<int>>&dp)
+   {
+        if(index >= arr.size()){
+           
+           if(target == 0)return 1;
+           else return 0;
         
-        sort(arr.begin(),arr.end());
-        int count=0;
-        
-        for(int i=0; i<n; i++){
-            if(arr[i] == 0)
-            count++;
+          
         }
         
-        vector<vector<int>>dp(n+1,vector<int>(target+1,-1));
+       if(dp[index][target]!=-1)return dp[index][target];
+       
+       int notTake = countsubsets(index-1,target,arr,dp);
+       
+       int Take = 0;
+       if(arr[index]<= target)
+       Take = countsubsets(index-1,target-arr[index],arr,dp);
+       
+       
+       return dp[index][target] = (notTake + Take);
+   }
+   
+    int perfectSum(vector<int>& arr, int target) {
+        int  n = arr.size();
         
-        return helper(arr, n, target, count, dp);
+        vector<vector<int>>dp(n,vector<int>(target+1,-1));
+        return countsubsets(n-1,target,arr,dp);
     }
 };
 
