@@ -103,28 +103,30 @@ struct Node
 */
 
 class Solution{
+    
+    bool fxn(Node* root) {
+        
+        if(root==NULL) return true;
+        if(root->left == NULL && root->right == NULL) return true;
+        
+       bool lft = fxn(root->left);
+       bool rt = fxn(root->right);
+       
+       int lc = 0, rc = 0;
+       if(root->left) lc = root->left->data;
+       if(root->right) rc = root->right->data;
+       
+       return lft && rt && (root->data == lc+rc);
+    }
+    
+    
     public:
     //Function to check whether all nodes of a tree have the value 
     //equal to the sum of their child nodes.
-    
-    bool fxn(Node* root) {
-        if(root==NULL) return true;
-        if(root->left == NULL && root->right==NULL) return true;
-        
-        int lc = 0, rc =0;
-        
-        bool left = fxn(root->left);
-        bool right = fxn(root->right);
-        
-        if(root->left) lc = root->left->data;
-        if(root->right) rc = root->right->data;
-        
-        return left&&right && (lc+rc == root->data);
-    }
     int isSumProperty(Node *root)
     {
      // Add your code here
-     return fxn(root);
+        return fxn(root);
      
     }
 };
