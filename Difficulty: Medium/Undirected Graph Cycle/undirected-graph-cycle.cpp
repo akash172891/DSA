@@ -5,94 +5,108 @@ using namespace std;
 
 // } Driver Code Ends
 
+
+class DisjointSet {
+    vector<int> rank, parent, size;
+    public:
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) {
+            return;
+        }
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
 class Solution {
   public:
-    // Function to detect cycle in an undirected graph.
-   void cycleDfs(vector<vector<int>>&adj , int parent, int node, vector<int>& vis, bool &ans){
-        if(ans)return;
-        for(auto it:adj[node]) {
-            if(vis[it]==0) {
-                vis[it]=1;
-                cycleDfs(adj, node, it, vis, ans);
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        DisjointSet ds(V);
+        bool ans = false;
+        for(int i=0;i<edges.size();i++) {
+            if(ds.findUPar(edges[i][0])!=ds.findUPar(edges[i][1])){
+                ds.unionBySize(edges[i][0], edges[i][1]);
             }
-            else if(vis[it]==1 && it!=parent) {
-                ans =true;
-                return;
-            }
+            else return true;
         }
-    }
-    
-    bool cycleBfs(vector<vector<int>>&adj , int src, vector<int>& vis) {
-        queue<pair<int,int>> q;
         
-        q.push({src, -1});
-        vis[src]=1;
-        
-        while(!q.empty()) {
-            
-            int node = q.front().first;
-            int parent = q.front().second;
-            q.pop();
-            
-            for(auto it :  adj[node]) {
-                if(vis[it]==0) {
-                    vis[it]=1;
-                    q.push({it, node});
-                }
-                else if(vis[it]==1 && it!=parent) {
-                    return true;
-                }
-            }
-            
-        }
         return false;
         
-    }
-    
-    bool isCycle(vector<vector<int>>& adj) {
-        // Code here
-        bool ans = false;
-        int n=adj.size();
-        vector<int>vis(n+1,0);
         
-        for(int i=0;i<n;i++){
-            if(ans)break;
-            if(vis[i]==0){
-                vis[i]=1;
-                // cycleDfs(adj, -1, i, vis, ans);
-                ans = cycleBfs(adj, i,vis);
-            }
-        }
-        return ans;
         
     }
 };
 
 
 //{ Driver Code Starts.
+
 int main() {
     int tc;
     cin >> tc;
+    cin.ignore();
     while (tc--) {
         int V, E;
         cin >> V >> E;
-        vector<vector<int>> adj(V);
-        for (int i = 0; i < E; i++) {
+        cin.ignore();
+        vector<vector<int>> edges;
+        for (int i = 1; i <= E; i++) {
             int u, v;
             cin >> u >> v;
-            adj[u].push_back(v);
-            adj[v].push_back(u);
+            edges.push_back({u, v});
         }
+
         Solution obj;
-        bool ans = obj.isCycle(adj);
+        bool ans = obj.isCycle(V, edges);
         if (ans)
-            cout << "1\n";
+            cout << "true\n";
         else
-            cout << "0\n";
+            cout << "false\n";
 
         cout << "~"
              << "\n";
     }
     return 0;
 }
+
 // } Driver Code Ends
