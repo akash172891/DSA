@@ -9,46 +9,26 @@ using namespace std;
 class Solution {
   public:
   
-   bool fxn(vector<int>& arr, int ind , int sum, vector<vector<int>> &dp) {
-       if(sum == 0){
-            return true;
-       }
-       
-       if(sum<0 || ind<0) return false;
-       
-       if(dp[ind][sum]!=0) return dp[ind][sum];
-       
-       int take =0, notake =0;
-       
-       if(ind-1>=0) take = fxn(arr, ind-1, sum-arr[ind], dp);
-       notake = fxn(arr, ind-1, sum, dp);
-       
-       return dp[ind][sum] = take||notake;
-    
-   }
+    bool fxn(vector<int>& arr, int ind, int sum,  vector<vector<int>>&dp) {
+        if(sum==0) return true;
+        
+        if(ind<0) return  false;
+        
+        if(dp[ind][sum]!=-1) return dp[ind][sum];
+        
+        int take = 0;
+        if(sum-arr[ind]>=0)take = fxn(arr, ind-1, sum-arr[ind], dp);
+        int notake = fxn(arr, ind-1, sum, dp);
+        
+        return dp[ind][sum] = take||notake;
+    }
     bool isSubsetSum(vector<int>& arr, int sum) {
         // code here
         
-        int  n = arr.size();
-        vector<vector<bool>> dp(n+1, vector<bool>(sum+1, false));
+        int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(sum+1, -1));
         
-        for(int i = 0; i<=n;i++) {
-            dp[i][0] = 1;
-        }
-        
-        for(int ind=1;ind<=n;ind++) {
-            for(int j = 0; j < sum+1; j++) {
-                 bool take =0, notake =0;
-       
-               if(ind-1>=0 && j-arr[ind-1] >=0) take = dp[ind-1][j-arr[ind-1]];
-               if(ind-1>=0)notake = dp[ind-1][j];
-               
-                dp[ind][j] = take||notake;
-            }
-        }
-        
-        
-        return dp[n][sum];
+        return fxn(arr, n-1, sum, dp);
         
     }
 };
