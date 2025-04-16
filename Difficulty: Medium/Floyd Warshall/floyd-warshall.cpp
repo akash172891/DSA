@@ -11,11 +11,13 @@ using namespace std;
 
 class Solution {
   public:
-    void shortestDistance(vector<vector<int>>& mat) {
+    void floydWarshall(vector<vector<int>> &mat) {
         // Code here
+        
+        
         int V  = mat.size();
         for(int i=0;i<V;i++){
-            for(int j=0;j<V;j++) if(mat[i][j]==-1) mat[i][j] = INT_MAX;
+            for(int j=0;j<V;j++) if(mat[i][j]==1e8) mat[i][j] = INT_MAX;
         }
         
         
@@ -29,10 +31,8 @@ class Solution {
         }
         
         for(int i=0;i<V;i++){
-            for(int j=0;j<V;j++) if(mat[i][j]==INT_MAX) mat[i][j] = -1;
+            for(int j=0;j<V;j++) if(mat[i][j]==INT_MAX) mat[i][j] = 1e8;
         }
-        
-        
     }
 };
 
@@ -51,7 +51,7 @@ int main() {
             }
         }
         Solution obj;
-        obj.shortestDistance(matrix);
+        obj.floydWarshall(matrix);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 cout << matrix[i][j] << " ";
