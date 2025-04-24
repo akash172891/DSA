@@ -4,32 +4,32 @@ using namespace std;
 
 
 // } Driver Code Ends
+
 class Solution {
   public:
-    vector<int> subarraySum(vector<int> &arr, int s) {
+    vector<int> subarraySum(vector<int> &arr, int target) {
         // code here
-        int n = arr.size();
-         int start=0,end=0;
-        long long sum=arr[start];
-        while(end<n){
-            if(sum<s){
-                end++;
-                sum+=arr[end];
+        
+        // for(int i=1;i<arr.size();i++) arr[i]+=arr[i-1];
+        
+        int i = -1 , j = 0;
+        int sum=0;
+        while(j<arr.size()) {
+            sum += arr[j];
+            while(sum>target && i<=j) {
+                i++;
+                sum-=arr[i];
             }
-            else if(sum>s){
-                sum-=arr[start];
-                start++;
-            }
-            else {
-             if(start<=end)   return {start+1,end+1};
-             return {-1};
-                
-            }
+            
+            if(sum==target) return {i+2, j+1};
+            else j++;
+            
         }
         return {-1};
+        
     }
-
 };
+
 
 //{ Driver Code Starts.
 
