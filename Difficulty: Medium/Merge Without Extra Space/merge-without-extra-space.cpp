@@ -9,20 +9,23 @@ class Solution {
   public:
     void mergeArrays(vector<int>& a, vector<int>& b) {
         // code here
-        int m  = b.size();
-       int i = a.size() - 1;
-            int j = 0;
-            while(i >= 0 && j < m){
-                if(a[i] > b[j]){
-                    swap(a[i],b[j]);
-                    i--;
-                    j++;
-                }
-                else
-                    break;
+        
+        int m = a.size(), n = b.size();
+        
+        int i = m-1, j =0;
+        
+        while(j<n && i>=0) {
+            if(a[i]>b[j]) {
+                swap(a[i], b[j]);
+                i--;
+                j++;
             }
-            sort(a.begin(),a.end());
-            sort(b.begin(),b.end());
+            else break;
+        }
+        
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+        
         
     }
 };
