@@ -10,7 +10,7 @@ class Solution {
     /*You are required to complete below function */
     string multiplyStrings(string& s1, string& s2) {
         // Your code here
-        int n = s1.length(), m = s2.length();
+         int n = s1.length(), m = s2.length();
         
     //  check for negative
         bool isNegative = false;
@@ -78,6 +78,7 @@ class Solution {
         prod = (index == -1) ? "0" : str;
     
         return isNegative ? "-" + prod : prod;
+        
     }
 };
 
