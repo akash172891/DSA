@@ -9,37 +9,43 @@ class Solution {
   public:
     vector<int> topoSort(int V, vector<vector<int>>& edges) {
         // code here
-        
-        vector<int> indegree(V, 0);
-        
         vector<vector<int>> adj(V);
-        
+        vector<int> indegree(V, 0);
         for(int i=0;i<edges.size();i++) {
             adj[edges[i][0]].push_back(edges[i][1]);
             indegree[edges[i][1]]++;
         }
         
-        
-        vector<int> ans;
         queue<int> q;
         
+        vector<int> vis(V, 0);
         
-        for(int i=0;i<indegree.size();i++) if(indegree[i]==0) q.push(i);
+        for(int i=0;i<V;i++) {
+           if(indegree[i]==0) q.push(i);
+        }
+        vector<int> ans;
         
         while(!q.empty()) {
-            
-            int node = q.front();
+            int x = q.front();
             q.pop();
             
-            ans.push_back(node);
+            // indegree[x]--;
+            if(indegree[x]==0) ans.push_back(x);
             
-            for(auto it : adj[node]) {
+            for(auto it  : adj[x]) {
                 indegree[it]--;
                 if(indegree[it]==0) q.push(it);
             }
+            
+            vis[x] = 1;
+            
+            // dfs(x, adj, vis, indegree); 
         }
+        
         if(ans.size()!=V) return {-1};
+        
         return ans;
+        
         
     }
 };
@@ -72,6 +78,7 @@ int main() {
         int V, E;
         cin >> V >> E;
 
+        int x = V;
         vector<vector<int>> adj(V);
         vector<vector<int>> edges;
 
@@ -84,9 +91,11 @@ int main() {
 
         Solution obj;
         vector<int> res = obj.topoSort(V, edges);
-
-        cout << check(V, res, adj) << endl;
-
+        bool ans = check(x, res, adj);
+        if (ans)
+            cout << "true\n";
+        else
+            cout << "false\n";
         cout << "~"
              << "\n";
     }
