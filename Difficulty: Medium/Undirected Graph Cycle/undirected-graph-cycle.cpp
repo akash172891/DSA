@@ -5,76 +5,44 @@ using namespace std;
 
 // } Driver Code Ends
 
-
-class DisjointSet {
-    vector<int> rank, parent, size;
-    public:
-    DisjointSet(int n) {
-        rank.resize(n + 1, 0);
-        parent.resize(n + 1);
-        size.resize(n + 1);
-        for (int i = 0; i <= n; i++) {
-            parent[i] = i;
-            size[i] = 1;
-        }
-    }
-
-    int findUPar(int node) {
-        if (node == parent[node])
-            return node;
-        return parent[node] = findUPar(parent[node]);
-    }
-
-    void unionByRank(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (rank[ulp_u] < rank[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-        }
-        else if (rank[ulp_v] < rank[ulp_u]) {
-            parent[ulp_v] = ulp_u;
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
-        }
-    }
-
-    void unionBySize(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) {
-            return;
-        }
-        if (size[ulp_u] < size[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-            size[ulp_v] += size[ulp_u];
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            size[ulp_u] += size[ulp_v];
-        }
-    }
-};
-
 class Solution {
   public:
+    bool ans = false;
+    void dfs(int node, vector<vector<int>>& adj, vector<bool>&vis, int parent) {
+        if(ans == true) return;
+        vis[node] = true;
+        
+        for(auto it: adj[node]) {
+            if(vis[it]==true && it!=parent) {
+                ans=true;
+                return;
+            }
+            else if(vis[it]==false) {
+                dfs(it, adj, vis, node);
+            }
+        }
+        vis[node]=false;
+    }
     bool isCycle(int V, vector<vector<int>>& edges) {
         // Code here
-        DisjointSet ds(V);
-        bool ans = false;
+        vector<vector<int>> adj(V);
+        
         for(int i=0;i<edges.size();i++) {
-            if(ds.findUPar(edges[i][0])!=ds.findUPar(edges[i][1])){
-                ds.unionBySize(edges[i][0], edges[i][1]);
-            }
-            else return true;
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
         }
         
-        return false;
+        vector<bool> vis(V, false);
+        // bool ans = false;
         
-        
-        
+        for(int i=0;i<V;i++) {
+            
+            if(vis[i]==false) {
+                dfs(i, adj, vis, -1);
+            }
+            if(ans) return ans;
+        }
+        return ans;
     }
 };
 
