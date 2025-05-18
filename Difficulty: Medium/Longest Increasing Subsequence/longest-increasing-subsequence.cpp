@@ -7,33 +7,23 @@ using namespace std;
 
 class Solution {
   public:
-    int fxn(vector<int> &arr, int ind, int prev, vector<vector<int>> &dp) {
-        if(ind < 0)return 0;
-        if(prev!=-1  && dp[prev][ind]!=0) return dp[prev][ind];
-        int take = 0;
-        
-        if(prev ==-1 || arr[ind] < arr[prev]) 
-        take = 1 + fxn(arr, ind-1, ind, dp);
-        int notake = fxn(arr, ind-1, prev, dp);
-        
-        return dp[prev][ind] = max(take, notake);
+    int fxn(vector<int>& arr, int ind, int prev, vector<vector<int>>&dp) {
+        if(ind>=arr.size()) return 0;
+        int take = 0, notake = 0;
+        if(dp[ind+1][prev+1]!=-1) return dp[ind+1][prev+1];
+        if(prev==-1 ||  arr[ind]>arr[prev]) {
+            take = 1+fxn(arr, ind+1, ind, dp);
+           
+        }
+         notake = fxn(arr, ind+1, prev, dp);
+         
+         return dp[ind+1][prev+1]= max(take, notake);
     }
     int lis(vector<int>& arr) {
         // code here
-        int n=arr.size();
-        vector<int>maxi(n, 1);
-        int ans=1;
-        
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(arr[j]<arr[i]) maxi[i]=max(maxi[i], maxi[j]+1);
-            }
-            ans=max(ans, maxi[i]);
-        }
-        
-        return ans;
-        
-        
+        int n = arr.size();
+        vector<vector<int>> dp(n+1, vector<int>(n+1, -1));
+        return fxn(arr, 0, -1, dp);
     }
 };
 
