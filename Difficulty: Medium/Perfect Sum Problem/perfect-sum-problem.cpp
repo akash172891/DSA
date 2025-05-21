@@ -1,73 +1,30 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-
 class Solution {
   public:
-    public:
-  
-   int countsubsets(int index, int target, vector<int>& arr,vector<vector<int>>&dp)
-   {
-        if(index >= arr.size()){
-           
-           if(target == 0)return 1;
-           else return 0;
+    int chc = 0;
+    int fxn(vector<int>& arr, int ind, int sum, vector<vector<int>>& dp) {
+        if(ind<0 || sum<0) return 0;
+        if(ind==0){
+             if(arr[0]==0&&sum==0)
+             return 2;
+             if(arr[0]==sum||sum==0)
+             return 1;
+             return 0;
+         }
         
-          
-        }
+        if(dp[ind][sum]!=-1) return dp[ind][sum];
         
-       if(dp[index][target]!=-1)return dp[index][target];
-       
-       int notTake = countsubsets(index-1,target,arr,dp);
-       
-       int Take = 0;
-       if(arr[index]<= target)
-       Take = countsubsets(index-1,target-arr[index],arr,dp);
-       
-       
-       return dp[index][target] = (notTake + Take);
-   }
-   
+        int take = fxn(arr, ind-1, sum-arr[ind], dp);
+        int notake = fxn(arr, ind-1, sum, dp);
+        
+        return dp[ind][sum]  = take+notake;
+    }
     int perfectSum(vector<int>& arr, int target) {
-        int  n = arr.size();
+        // code here
+        int n = arr.size();
+        for(auto it: arr) if(it==0) chc++;
         
-        vector<vector<int>>dp(n,vector<int>(target+1,-1));
-        return countsubsets(n-1,target,arr,dp);
+        vector<vector<int>> dp(n, vector<int>(target+1, -1));
+        return fxn(arr, n-1, target, dp);
+        
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-    int t;
-    cin >> t;
-    cin.ignore(); // Ignore newline character after t
-
-    while (t--) {
-        vector<int> arr;
-        int target;
-        string inputLine;
-
-        getline(cin, inputLine); // Read the array input as a line
-        stringstream ss(inputLine);
-        int value;
-        while (ss >> value) {
-            arr.push_back(value);
-        }
-
-        cin >> target;
-        cin.ignore(); // Ignore newline character after target input
-
-        Solution solution;
-        cout << solution.perfectSum(arr, target);
-        cout << "\n~\n";
-    }
-
-    return 0;
-}
-
-// } Driver Code Ends
